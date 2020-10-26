@@ -74,16 +74,30 @@ const obterClassificacao = async (ctx) => {
     pontuacoes.push(pontuacaoTime);
   }
 
+  const porPontos = (a, b) =>
+    a.pontos > b.pontos
+      ? -1
+      : a.pontos < b.pontos
+      ? 1
+      : a.vitorias > b.vitorias
+      ? -1
+      : a.vitorias < b.vitorias
+      ? 1
+      : a.golsFeitos - a.golsSofridos > b.golsFeitos - b.golsSofridos
+      ? -1
+      : a.golsFeitos - a.golsSofridos < b.golsFeitos - b.golsSofridos
+      ? 1
+      : a.localeCompare(b);
+  pontuacoes.sort(porPontos);
+
   if (pontuacoes) {
     ctx.status = 200;
     ctx.body = { pontuacoes };
     return;
   }
 
-  console.log(pontuacoes);
-
   ctx.status = 404;
-  ctx.body = "Tenta de novo";
+  ctx.body = "Pedido mal formatado";
 };
 
 module.exports = { obterClassificacao };
